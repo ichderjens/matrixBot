@@ -190,9 +190,29 @@ public class Client {
         sendRoomEvent("m.room.message", roomID, messageObject, response);
     }
 
+    public void sendNotification () {}
+
     public void sendRoomEvent(String event, String roomID, JSONObject content, DataCallback response) throws
             IOException {
         httpHelper.sendRequestAsync(host, HttpHelper.URLs.rooms + roomID + "/send/" + event + "/" + System.currentTimeMillis(), content, "PUT", data -> {
+            if (response != null) {
+                response.onData(data);
+            }
+        });
+    }
+
+    public void inviteUser(String roomID,JSONObject content, DataCallback response) throws
+            IOException {
+        httpHelper.sendRequestAsync(host, HttpHelper.URLs.invites  + roomID + "/invite", content, "POST", data -> {
+            if (response != null) {
+                response.onData(data);
+            }
+        });
+    }
+
+    public void isUserOnline(String userID,JSONObject content, DataCallback response) throws
+            IOException {
+        httpHelper.sendRequestAsync(host, HttpHelper.URLs.userState  + userID + "/status", content, "GET", data -> {
             if (response != null) {
                 response.onData(data);
             }

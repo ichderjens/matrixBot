@@ -3,6 +3,7 @@ package de.jojii.matrixclientserver.Networking;
 import de.jojii.matrixclientserver.Callbacks.DataCallback;
 import org.json.JSONObject;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -21,6 +22,11 @@ public class HttpHelper {
         public static String whoami = client+"account/whoami";
         public static String presence = client+"presence/";
         public static String rooms = client+"rooms/";
+
+        public static String invites = root + "client/v3/rooms/";
+
+        public static String userState = root + "client/v3/presence/";
+
         public static String sync = client+"sync";
         public static String user  = client+"user/";
         public static String upload = media+"upload/";
@@ -37,6 +43,9 @@ public class HttpHelper {
             System.out.println(surl);
         }*/
         URL obj = new URL(surl);
+       // System.out.println("URL:" + surl);
+        //System.out.println("Method:" + requestMethod);
+        //System.out.println("Data:" + data);
         URLConnection con = obj.openConnection();
         HttpURLConnection http = (HttpURLConnection)con;
         http.setRequestMethod(requestMethod);
@@ -67,6 +76,7 @@ public class HttpHelper {
             return "{\n" +
                     "  \"response\":\"error\",\n" +
                     "  \"code\":"+http.getResponseCode()+"\n" +
+                    "  \"Message\":" + http.getResponseMessage() + "\n" +
                     "}";
         }
     }
@@ -76,7 +86,8 @@ public class HttpHelper {
 
         URL obj = new URL(surl);
         URLConnection con = obj.openConnection();
-        HttpURLConnection http = (HttpURLConnection)con;
+        HttpsURLConnection http = (HttpsURLConnection)con;
+        con.setConnectTimeout(3000);
         http.setRequestMethod(requestMethod);
         http.setDoOutput(true);
         http.setRequestProperty("Content-Type", contentType);
